@@ -1,14 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CountResponse",
+  "title": "InstantiateMsg",
   "type": "object",
   "required": [
-    "count"
+    "fundraiser_code_id"
   ],
   "properties": {
-    "count": {
+    "fundraiser_code_id": {
       "type": "integer",
-      "format": "int32"
+      "format": "uint64",
+      "minimum": 0.0
     }
   }
 }

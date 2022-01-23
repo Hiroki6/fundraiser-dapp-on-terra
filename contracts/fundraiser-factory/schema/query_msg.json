@@ -5,29 +5,25 @@
     {
       "type": "object",
       "required": [
-        "get_fundraiser"
+        "get_fundraisers"
       ],
       "properties": {
-        "get_fundraiser": {
-          "type": "object"
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "donation_amount"
-      ],
-      "properties": {
-        "donation_amount": {
+        "get_fundraisers": {
           "type": "object",
           "required": [
-            "address"
+            "limit",
+            "offset"
           ],
           "properties": {
-            "address": {
-              "type": "string"
+            "limit": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "offset": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
             }
           }
         }

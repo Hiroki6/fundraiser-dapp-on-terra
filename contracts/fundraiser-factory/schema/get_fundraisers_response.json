@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetFundraisersResponse",
+  "type": "object",
+  "required": [
+    "addrs"
+  ],
+  "properties": {
+    "addrs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

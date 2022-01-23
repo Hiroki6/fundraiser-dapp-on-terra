@@ -5,10 +5,30 @@
     {
       "type": "object",
       "required": [
-        "increment"
+        "set_beneficiary"
       ],
       "properties": {
-        "increment": {
+        "set_beneficiary": {
+          "type": "object",
+          "required": [
+            "beneficiary"
+          ],
+          "properties": {
+            "beneficiary": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "donate"
+      ],
+      "properties": {
+        "donate": {
           "type": "object"
         }
       },
@@ -17,20 +37,11 @@
     {
       "type": "object",
       "required": [
-        "reset"
+        "withdraw"
       ],
       "properties": {
-        "reset": {
-          "type": "object",
-          "required": [
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+        "withdraw": {
+          "type": "object"
         }
       },
       "additionalProperties": false

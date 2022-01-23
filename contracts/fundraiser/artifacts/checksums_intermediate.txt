@@ -1,0 +1,1 @@
+c40ca465dc0cf64311d03235c971fbf9a4454371a167cd9b54d534060b8e63b9  ./target/wasm32-unknown-unknown/release/fundraiser.wasm

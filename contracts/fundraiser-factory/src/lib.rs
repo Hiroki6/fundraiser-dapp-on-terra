@@ -3,8 +3,7 @@ mod error;
 pub mod msg;
 pub mod state;
 mod execute;
-mod util;
+mod response;
 mod query;
-mod contract_test;
 
 pub use crate::error::ContractError;

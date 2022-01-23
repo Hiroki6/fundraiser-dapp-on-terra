@@ -1,5 +1,5 @@
 import { LCDClient, MsgExecuteContract, Fee } from "@terra-money/terra.js";
-import { contractAdress } from "./address";
+import { contractAddress } from "./address";
 
 // ==== utils ====
 
@@ -20,7 +20,7 @@ const _exec =
       msgs: [
         new MsgExecuteContract(
           wallet.walletAddress,
-          contractAdress(wallet),
+          contractAddress(wallet),
           msg
         ),
       ],
@@ -28,7 +28,7 @@ const _exec =
 
     while (true) {
       try {
-        return await lcd.tx.txInfo(result.txhash);
+        return await lcd.tx.txInfo(result.result.txhash);
       } catch (e) {
         if (Date.now() < untilInterval) {
           await sleep(500);
@@ -45,7 +45,53 @@ const _exec =
 
 // ==== execute contract ====
 
-export const increment = _exec({ increment: {} });
+export const createFundraiser = (createFundraiserMsg) => {
+    _exec( {
+        beneficiary: createFundraiserMsg.beneficiary,
+        custodian: createFundraiserMsg.custodian,
+        description: createFundraiserMsg.description,
+        image_url: createFundraiserMsg.image_url,
+        name: createFundraiserMsg.name,
+        url: createFundraiserMsg.url,
+    })
+}
 
-export const reset = async (wallet, count) =>
-  _exec({ reset: { count } })(wallet);
+export const setBeneficiary = (setBeneficiaryMsg) => {
+    _exec( {
+        fundraiser_id: setBeneficiaryMsg.beneficiary,
+        beneficiary: setBeneficiaryMsg.beneficiary,
+    })
+}
+
+export const donate = (donateMsg) => {
+    _exec( {
+            fundraiser_id: donateMsg.fundraiser_id,
+        },
+        new Fee(200000, { uluna: donateMsg.amount })
+    )
+}
+
+export class CreateFundraiserMsg {
+    constructor(beneficiary, custodian, description, image_url, name, url) {
+        this.beneficiary = beneficiary;
+        this.custodian = custodian;
+        this.description = description;
+        this.image_url = image_url;
+        this.name = name;
+        this.url = url;
+    }
+}
+
+export class SetBeneficiaryMsg {
+    constructor(fundraiser_id, beneficiary) {
+        this.fundraiser_id = fundraiser_id;
+        this.beneficiary = beneficiary;
+    }
+}
+
+export class DonateMsg {
+    constructor(fundraiser_id, amount) {
+        this.fundraiser_id = fundraiser_id;
+        this.amount = amount;
+    }
+}

@@ -9,14 +9,15 @@ pub struct InstantiateMsg {
     pub image_url: String,
     pub description: String,
     pub beneficiary: String,
-    pub custodian: String,
+    pub custodian: String
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     SetBeneficiary { beneficiary: String },
-    Donate {}
+    Donate {},
+    Withdraw {},
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -34,8 +35,7 @@ pub struct FundraiserResponse {
     pub image_url: String,
     pub description: String,
     pub owner: String,
-    pub beneficiary: String,
-    pub custodian: String
+    pub beneficiary: String
 }
 
 // We define a custom struct for each query response

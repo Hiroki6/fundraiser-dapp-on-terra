@@ -8,3 +8,11 @@ export const getCount = async (wallet) => {
   })
   return lcd.wasm.contractQuery(contractAdress(wallet), { get_count: {} })
 }
+
+export const getMyDonations = async (wallet) => {
+  const terra = new LCDClient({
+    URL: wallet.network.lcd,
+    chainID: wallet.network.chainID,
+  })
+
+}

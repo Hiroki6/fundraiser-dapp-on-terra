@@ -4,13 +4,31 @@ use serde::{Deserialize, Serialize};
 use cosmwasm_std::{Addr, Uint128};
 use cw_storage_plus::{Item, Map};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct State {
-    pub count: i32,
-    pub owner: Addr,
+pub struct FundraiserContract<'a> {
+    pub fundraiser: Item<'a, Fundraiser>,
+    pub donation: Map<'a, Addr, Vec<Donation>>
 }
 
-pub const STATE: Item<State> = Item::new("state");
+impl Default for FundraiserContract<'static> {
+    fn default() -> Self {
+        Self::new(
+            "fundraiser",
+            "donation"
+        )
+    }
+}
+
+impl<'a> FundraiserContract<'a> {
+    fn new(
+        fundraiser_key: &'a str,
+        donation_key: &'a str
+    ) -> Self {
+        Self {
+            fundraiser: Item::new(fundraiser_key),
+            donation: Map::new(donation_key),
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Fundraiser {
@@ -20,17 +38,11 @@ pub struct Fundraiser {
     pub description: String,
     pub owner: Addr,
     pub beneficiary: Addr,
-    pub custodian: Addr,
 }
 
-pub const FUNDRAISER: Item<Fundraiser> = Item::new("fundraiser");
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Donation {
     pub value: Uint128,
     pub date: Uint128,
 }
-
-// @todo find the solution to use Map<Addr, Vec<Donation>> without parsing error
-pub const DONATION: Map<Addr, Uint128> = Map::new("donation");
-//pub const DONATION: Map<Addr, Vec<Donation>> = Map::new("donation");
