@@ -1,5 +1,14 @@
-deploy:
-	terrain deploy fundraiser --signer validator
+optimize:
+	docker run --rm -v "$$(pwd)":/code --mount type=volume,source="$$(basename "$$(pwd)")_cache",target=/code/target --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry cosmwasm/workspace-optimizer:0.12.4
+	cp artifacts/fundraiser.wasm contracts/fundraiser/artifacts
+	cp artifacts/fundraiser-factory.wasm contracts/fundraiser-factory/artifacts
 
-initiate:
-	terrad tx wasm instantiate 1 '{"name": "fundraiser", "symbol": "fundraiser"}' --from test1 --chain-id=localterra --fees=10000uluna --gas=auto --broadcast-mode=block
+deploy/fandraiser:
+	terrain code:store fundraiser --signer validator --no-rebuild
+
+deploy/factory:
+	terrain code:store fundraiser-factory --signer validator --no-rebuild
+
+initiate/factory:
+	terrain task:run sync-fundraiser-code-id
+	terrain contract:instantiate fundraiser-factory --code-id $(CODE_ID) --signer validator

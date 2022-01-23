@@ -18,8 +18,7 @@
           }
         },
         "instantiateMsg": {
-          "name": "fundraiser",
-          "symbol": "fundraiser"
+          "fundraiser_code_id": 13
         },
         "gas": "auto"
       }
