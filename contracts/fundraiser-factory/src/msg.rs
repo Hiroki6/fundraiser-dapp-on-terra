@@ -15,7 +15,6 @@ pub enum ExecuteMsg {
         image_url: String,
         description: String,
         beneficiary: String,
-        custodian: String
     }
 }
 

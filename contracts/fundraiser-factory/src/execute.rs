@@ -42,7 +42,6 @@ impl<'a> FundraiserFactoryContract<'a> {
                 image_url,
                 description,
                 beneficiary,
-                custodian
             } => self.create_fundraiser(
                 deps,
                 info,
@@ -50,8 +49,7 @@ impl<'a> FundraiserFactoryContract<'a> {
                 url,
                 image_url,
                 description,
-                beneficiary,
-                custodian
+                beneficiary
             ),
         }
     }
@@ -73,13 +71,12 @@ impl<'a> FundraiserFactoryContract<'a> {
     fn create_fundraiser(
         &self,
         deps: DepsMut,
-        _info: MessageInfo,
+        info: MessageInfo,
         name: String,
         url: String,
         image_url: String,
         description: String,
-        beneficiary: String,
-        custodian: String
+        beneficiary: String
     ) -> Result<Response, ContractError> {
         let config = self.config.load(deps.storage)?;
 
@@ -89,7 +86,7 @@ impl<'a> FundraiserFactoryContract<'a> {
             image_url,
             description,
             beneficiary,
-            custodian
+            custodian: info.sender.to_string()
         };
 
         Ok(Response::new()

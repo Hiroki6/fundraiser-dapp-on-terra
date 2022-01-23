@@ -9,7 +9,6 @@ import {
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core';
-import { instantiate, InstantiateMsg } from './contract/instantiate'
 import { ConnectWallet } from './components/ConnectWallet'
 
 const useStyles = makeStyles(theme => ({
@@ -50,8 +49,6 @@ function App() {
   const [ custodian, setCustodian ] = useState(null)
   
   const handleSubmit = async() => {
-    const instantiateMsg = new InstantiateMsg(beneficiary, beneficiary, description, imageURL, name, url);
-    const result = await instantiate(connectedWallet, instantiateMsg);
     if(result.success) {
       console.log("successfully created fundraiser")
     } else {
@@ -110,7 +107,7 @@ function App() {
       <TextField
         id="outlined-bare"
         className={classes.textField}
-        placeholder="Fundraiser Ethereum Address"
+        placeholder="LunaTerra Wallet Address"
         margin="normal"
         onChange={(e) => setAddress(e.target.value)}
         variant="outlined"

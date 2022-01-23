@@ -1,2 +1,0 @@
-7f54c01ed44c241117d8582b8971f14c7f9c1e0e990b77d68b342ed53439aa83  target/wasm32-unknown-unknown/release/fundraiser.wasm
-41a33acffd83eda167aecfa48ee1ba2f98bec3c9b86fc283fe9b98939f42ca09  target/wasm32-unknown-unknown/release/fundraiser_factory.wasm

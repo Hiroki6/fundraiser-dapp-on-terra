@@ -1,7 +1,8 @@
 /target/
-
+/artifacts/
 Cargo.lock
 
 .idea
+/node_modules/
 
 refs.terrain.json
