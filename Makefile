@@ -1,11 +1,11 @@
-optimize:
+wasm-build:
 	cd contracts/fundraiser && cargo wasm && cargo schema
 	cd contracts/fundraiser-factory && cargo wasm && cargo schema
 	docker run --rm -v "$$(pwd)":/code --mount type=volume,source="$$(basename "$$(pwd)")_cache",target=/code/target --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry cosmwasm/workspace-optimizer:0.12.4
 	cp artifacts/fundraiser.wasm contracts/fundraiser/artifacts
 	cp artifacts/fundraiser_factory.wasm contracts/fundraiser-factory/artifacts
 
-deploy/fandraiser:
+deploy/fundraiser:
 	terrain code:store fundraiser --signer validator --no-rebuild
 
 deploy/factory:

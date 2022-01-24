@@ -6,7 +6,7 @@ use cw_storage_plus::Item;
 
 pub struct FundraiserFactoryContract<'a> {
     // fundraiser contract addresses
-    pub fundraisers: Item<'a, Vec<Addr>>,
+    pub fundraisers: Item<'a, FundAddrs>,
     pub config: Item<'a, Config>
 }
 
@@ -14,6 +14,11 @@ pub struct FundraiserFactoryContract<'a> {
 pub struct Config {
     pub owner: Addr,
     pub fundraiser_code_id: u64
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct FundAddrs {
+    pub addrs: Vec<String>
 }
 
 impl Default for FundraiserFactoryContract<'static> {

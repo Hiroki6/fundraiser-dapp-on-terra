@@ -1,4 +1,13 @@
 import { useWallet, WalletStatus } from '@terra-dev/use-wallet'
+import {Button, makeStyles} from "@material-ui/core";
+
+const useStyles = makeStyles({
+  button: {
+    color: "white",
+    backgroundColor: "#0046ff",
+    borderRadius: "5px"
+  }
+})
 
 export const ConnectWallet = () => {
   const {
@@ -10,34 +19,38 @@ export const ConnectWallet = () => {
     disconnect,
   } = useWallet()
 
+  const classes = useStyles();
+
   return (
     <div>
       {status === WalletStatus.WALLET_NOT_CONNECTED && (
         <>
           {availableInstallTypes.map((connectType) => (
-            <button
+            <Button
               key={`install-${connectType}`}
+              variant="contained"
               onClick={() => install(connectType)}
-              type="button"
+              className={classes.button}
             >
               Install {connectType}
-            </button>
+            </Button>
           ))}
           {availableConnectTypes.map((connectType) => (
-            <button
+            <Button
               key={`connect-${connectType}`}
+              variant="contained"
               onClick={() => connect(connectType)}
-              type="button"
+              className={classes.button}
             >
               Connect {connectType}
-            </button>
+            </Button>
           ))}
         </>
       )}
       {status === WalletStatus.WALLET_CONNECTED && (
-        <button onClick={() => disconnect()} type="button">
+        <Button onClick={() => disconnect()} variant="contained" className={classes.button}>
           Disconnect
-        </button>
+        </Button>
       )}
     </div>
   )

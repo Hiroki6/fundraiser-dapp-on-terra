@@ -36,4 +36,5 @@ impl<'a> FundraiserContract<'a> {
         };
         Ok(DonationAmountResponse {amount: donation_count})
     }
+    
 }

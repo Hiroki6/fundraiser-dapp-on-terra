@@ -4,7 +4,7 @@ use protobuf::Message;
 use crate::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg};
 use crate::response::MsgInstantiateContractResponse;
-use crate::state::{Config, FundraiserFactoryContract};
+use crate::state::{Config, FundAddrs, FundraiserFactoryContract};
 
 const CONTRACT_NAME: &str = "fundraiser factory";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -24,6 +24,12 @@ impl<'a> FundraiserFactoryContract<'a> {
         set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
         self.config.save(deps.storage, &config)?;
+
+        let fund_addrs = FundAddrs {
+            addrs: vec![]
+        };
+
+        self.fundraisers.save(deps.storage, &fund_addrs)?;
 
         Ok(Response::new())
     }
@@ -115,16 +121,16 @@ impl<'a> FundraiserFactoryContract<'a> {
             )
             .map_err(|_| {
                 ContractError::Std(StdError::parse_err(
-                    "MsgInstantiateContractReponse",
+                    "MsgInstantiateContractResponse",
                     "failed to parse data",
                 ))
             })?;
 
         let contract_addr = deps.api.addr_validate(&res.contract_address)?;
 
-        self.fundraisers.update(deps.storage, |mut addrs| -> Result<_, ContractError> {
-            addrs.push(contract_addr);
-            Ok(addrs)
+        self.fundraisers.update(deps.storage, |mut fund_addrs| -> Result<_, ContractError> {
+            fund_addrs.addrs.push(contract_addr.to_string());
+            Ok(fund_addrs)
         })?;
 
         Ok(Response::new())

@@ -35,7 +35,7 @@ pub struct FundraiserResponse {
     pub image_url: String,
     pub description: String,
     pub owner: String,
-    pub beneficiary: String
+    pub beneficiary: String // @todo add total donation
 }
 
 // We define a custom struct for each query response
