@@ -1,9 +1,10 @@
-import {Fee, TxInfo} from "@terra-money/terra.js";
+import {Coin, Fee, TxInfo} from "@terra-money/terra.js";
 import {ConnectedWallet} from "@terra-money/wallet-provider";
 import {execute} from "../util";
+import {Coins} from "@terra-money/terra.js/dist/core/Coins";
 
-const _execFundraiserContract = (msg: any, fee = new Fee(200000, { uluna: 10000 })) => async (contractAddress: string, wallet: ConnectedWallet) => {
-  return execute(contractAddress)(msg, fee)(wallet)
+const _execFundraiserContract = (msg: any, fee = new Fee(200000, { uluna: 10000 })) => async (contractAddress: string, wallet: ConnectedWallet, coin?: Coins.Input) => {
+  return execute(contractAddress)(msg, fee)(wallet, coin)
 }
 
 export const setBeneficiary = async (wallet: ConnectedWallet, contractAddress: string, beneficiary: string): Promise<TxInfo> => {
@@ -12,14 +13,12 @@ export const setBeneficiary = async (wallet: ConnectedWallet, contractAddress: s
     }})(contractAddress, wallet)
 }
 
-export const donate = async(wallet: ConnectedWallet, contractAddress: string, amount: number) => {
-    return _execFundraiserContract( {donate: {}},
-        new Fee(200000, { uluna: amount })
-    )(contractAddress, wallet)
+export const donate = async(wallet: ConnectedWallet, contractAddress: string, amount: number): Promise<TxInfo> => {
+    const coin = new Coin("uluna", amount);
+    return _execFundraiserContract( {donate: {}})(contractAddress, wallet, [coin])
 }
 
-export const withDraw = async(wallet: ConnectedWallet, contractAddress: string, amount: number) => {
-    return _execFundraiserContract( {with_draw: {}},
-        new Fee(200000, { uluna: amount })
-    )(contractAddress, wallet)
+export const withDraw = async(wallet: ConnectedWallet, contractAddress: string, amount: number): Promise<TxInfo> => {
+    const coin = new Coin("uluna", amount);
+    return _execFundraiserContract( {with_draw: {}})(contractAddress, wallet, [coin])
 }

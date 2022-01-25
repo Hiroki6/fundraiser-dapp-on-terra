@@ -1,4 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
 use crate::state::{Donation, FundraiserContract};
 
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, Addr, Uint128, BankMsg};
@@ -34,6 +33,7 @@ impl<'a> FundraiserContract<'a> {
         };
         set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
         self.fundraiser.save(deps.storage, &fundraiser)?;
+        self.total_donations.save(deps.storage, &Uint128::zero())?;
 
         Ok(Response::new()
             .add_attribute("method", "instantiate")
@@ -75,8 +75,12 @@ impl<'a> FundraiserContract<'a> {
         let payment = must_pay(&info, ULUNA)?;
         let donation = Donation {
             value: payment,
-            date: Uint128::new(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis())
+            date: Uint128::new(instant::Instant::now().elapsed().as_millis())
         };
+
+        self.total_donations.update(deps.storage, |total| -> Result<_, ContractError> {
+            Ok(total+payment)
+        })?;
 
         self.donation.update(deps.storage, info.sender, |donation_opt: Option<Vec<Donation>>| -> Result<_, ContractError> {
             match donation_opt {

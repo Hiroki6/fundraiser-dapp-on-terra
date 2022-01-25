@@ -1,6 +1,5 @@
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import {ConnectWallet} from "../components/ConnectWallet";
 import {makeStyles} from "@material-ui/core";
 import {useConnectedWallet} from "@terra-money/wallet-provider";
 import {useEffect, useState} from "react";
@@ -113,7 +112,6 @@ const New = () => {
                 className={classes.button}>
                 Submit
             </Button>
-            <ConnectWallet/>
         </div>
     )
 }

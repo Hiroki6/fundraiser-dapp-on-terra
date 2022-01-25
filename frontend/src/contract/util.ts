@@ -8,12 +8,12 @@ const untilInterval = Date.now() + 1000 * 60;
 
 export const execute =
     (contractAddress: string) =>
-        (msg: any, fee = new Fee(200000, { uluna: 10000 })) =>
+        (msg: any, fee?: Fee) =>
             async (wallet: ConnectedWallet, coins?: Coins.Input) => {
                 const lcd = getLCDClient(wallet);
 
                 const result = await wallet.post({
-                    //fee,
+                    fee,
                     msgs: [
                         new MsgExecuteContract(
                             wallet.walletAddress,
@@ -25,7 +25,9 @@ export const execute =
                     gas: 'auto'
                 });
 
-                return handleTxResult(lcd, result);
+                const tx = await handleTxResult(lcd, result);
+                console.log(result.success);
+                return tx
             };
 
 export const sendMoney =

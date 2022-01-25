@@ -13,4 +13,5 @@ interface FundraiserResponse {
     description: string,
     owner: string,
     beneficiary: string
+    total_donations: number
 }

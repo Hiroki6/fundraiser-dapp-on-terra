@@ -3,7 +3,7 @@ use std::fs::create_dir_all;
 
 use cosmwasm_schema::{export_schema, remove_schemas, schema_for};
 
-use fundraiser::msg::{FundraiserResponse, DonationAmountResponse, ExecuteMsg, InstantiateMsg, QueryMsg};
+use fundraiser::msg::{FundraiserResponse, DonationAmountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, MyDonationsResponse};
 
 fn main() {
     let mut out_dir = current_dir().unwrap();
@@ -16,4 +16,5 @@ fn main() {
     export_schema(&schema_for!(QueryMsg), &out_dir);
     export_schema(&schema_for!(FundraiserResponse), &out_dir);
     export_schema(&schema_for!(DonationAmountResponse), &out_dir);
+    export_schema(&schema_for!(MyDonationsResponse), &out_dir);
 }
