@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Uint128};
+use cosmwasm_std::{Addr, Timestamp, Uint128};
 use cw_storage_plus::{Item, Map};
 
 pub struct FundraiserContract<'a> {
@@ -48,5 +48,5 @@ pub struct Fundraiser {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Donation {
     pub value: Uint128,
-    pub date: Uint128,
+    pub date: Timestamp,
 }

@@ -50,7 +50,7 @@ impl<'a> FundraiserContract<'a> {
     ) -> Result<Response, ContractError> {
         match msg {
             ExecuteMsg::SetBeneficiary { beneficiary } => self.set_beneficiary(deps, info, beneficiary),
-            ExecuteMsg::Donate {} => self.donate(deps, info),
+            ExecuteMsg::Donate {} => self.donate(deps, env, info),
             ExecuteMsg::Withdraw {} => self.withdraw(deps, env, info)
         }
     }
@@ -70,12 +70,12 @@ impl<'a> FundraiserContract<'a> {
         Ok(Response::new().add_attribute("method", "set_beneficiary"))
     }
 
-    fn donate(&self, deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {
+    fn donate(&self, deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, ContractError> {
         // currently we assume fund is luna
         let payment = must_pay(&info, ULUNA)?;
         let donation = Donation {
             value: payment,
-            date: Uint128::new(instant::Instant::now().elapsed().as_millis())
+            date: env.block.time
         };
 
         self.total_donations.update(deps.storage, |total| -> Result<_, ContractError> {
