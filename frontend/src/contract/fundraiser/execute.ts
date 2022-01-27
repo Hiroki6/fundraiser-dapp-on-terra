@@ -18,7 +18,6 @@ export const donate = async(wallet: ConnectedWallet, contractAddress: string, am
     return _execFundraiserContract( {donate: {}})(contractAddress, wallet, [coin])
 }
 
-export const withDraw = async(wallet: ConnectedWallet, contractAddress: string, amount: number): Promise<TxInfo> => {
-    const coin = new Coin("uluna", amount);
-    return _execFundraiserContract( {with_draw: {}})(contractAddress, wallet, [coin])
+export const withDraw = async(wallet: ConnectedWallet, contractAddress: string): Promise<TxInfo> => {
+    return _execFundraiserContract( {withdraw: {}})(contractAddress, wallet)
 }

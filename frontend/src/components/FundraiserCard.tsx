@@ -1,20 +1,20 @@
 import {Fundraiser} from "../util/factoryHelper";
 import {
-    Avatar,
     Button,
     Card,
     CardActionArea,
     CardActions,
     CardContent,
     CardMedia,
-    Container, Dialog, DialogContent, DialogContentText, DialogTitle, FormControl, Input,
+    Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Input,
     makeStyles,
     Typography
 } from "@material-ui/core";
 import {useEffect, useState} from "react";
 import {getExchangeRate} from "../util/luna";
-import {useConnectedWallet} from "@terra-money/wallet-provider";
-import {donate} from "../contract/fundraiser/execute";
+import {ConnectedWallet, useConnectedWallet} from "@terra-money/wallet-provider";
+import {donate, setBeneficiary as executeSetBeneficiary, withDraw} from "../contract/fundraiser/execute";
+import {queryMyDonations, Donation} from "../contract/fundraiser/query";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -42,7 +42,19 @@ const useStyles = makeStyles(theme => ({
     },
     button: {
         backgroundColor: '#1a237e',
-        color: 'white'
+        color: 'white',
+        display: "block",
+        marginLeft: "auto",
+        marginTop: "20px"
+    },
+    form: {
+        display: "block"
+    },
+    formFrame: {
+        borderRadius: "10px",
+        border: "1px solid #0046ff",
+        margin: "10px 0",
+        padding: "20px",
     }
 }));
 
@@ -56,23 +68,58 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
     const connectedWallet = useConnectedWallet();
 
     useEffect(() => {
-        init()
+        if(connectedWallet) {
+            init(connectedWallet)
+        }
     }, [connectedWallet]);
 
-    const init = async () => {
+    const init = async (wallet: ConnectedWallet) => {
         const exchangeRate = await getExchangeRate();
         setExchangeRate(exchangeRate);
+        const donations = await queryMyDonations(wallet, fundraiser.contractAddress, wallet.terraAddress);
+        setDonationList(donations.donations);
+        setIsOwner(fundraiser.owner === wallet.terraAddress);
     };
 
     const [ open, setOpen ] = useState(false);
     const [ donationAmount, setDonationAmount ] = useState(0);
     const [ exchangeRate, setExchangeRate ] = useState(0);
+    const [ donationList, setDonationList ] = useState<Donation[]>([]);
+    const [ isOwner, setIsOwner ] = useState(false);
+    const [ beneficiary, setBeneficiary ] = useState(fundraiser.beneficiary);
 
     const lunaAmount = (donationAmount / exchangeRate || 0);
 
     const handleDonate = async () => {
         if(connectedWallet) {
             const result = await donate(connectedWallet, fundraiser.contractAddress, parseInt((lunaAmount*100000).toFixed(0), 10));
+            console.log(result.txhash);
+        }
+    }
+
+    const renderDonationList = () => {
+        if(connectedWallet) {
+            return donationList.map((donation, index) => {
+                const euro = (donation.value * exchangeRate / 100000);
+                return (
+                    <li>
+                        <p>LUNA: {(donation.value/100000).toFixed(6)}, €{euro.toFixed(2)}</p>
+                    </li>
+                )
+            })
+        }
+    }
+
+    const handleSetBeneficiary = async () => {
+        if(connectedWallet) {
+            const result = await executeSetBeneficiary(connectedWallet, fundraiser.contractAddress, beneficiary);
+            console.log(result.txhash);
+        }
+    }
+
+    const handleWithdraw = async () => {
+        if(connectedWallet) {
+            const result = await withDraw(connectedWallet, fundraiser.contractAddress);
             console.log(result.txhash);
         }
     }
@@ -85,26 +132,59 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <Avatar alt={fundraiser.name} src={fundraiser.imageUrl} />
+                        <img alt={fundraiser.name} src={fundraiser.imageUrl} className={classes.media} />
                         <Typography component="p">
                             {fundraiser.description}
                         </Typography>
-                        <FormControl>
-                            €
-                            <Input
-                                value={donationAmount}
-                                onChange={(e) => setDonationAmount(e.target.value as unknown as number)}
-                                placeholder="0.0"
-                            />
+                        <div className={classes.formFrame}>
+                            <FormControl className={classes.form}>
+                                €
+                                <Input
+                                    value={donationAmount}
+                                    onChange={(e) => setDonationAmount(e.target.value as unknown as number)}
+                                    placeholder="0.0"
+                                />
 
-                            <p>LUNA: {lunaAmount.toFixed(4)}</p>
-                        </FormControl>
+                                <p>LUNA: {lunaAmount.toFixed(4)}</p>
+                            </FormControl>
+                            <Button onClick={handleDonate} variant="contained" className={classes.button}>
+                                Donate
+                            </Button>
+                            </div>
+                        <div>
+                            <Typography component="h3">My donations</Typography>
+                            <ul>
+                                {renderDonationList()}
+                            </ul>
+                        </div>
 
-                        <Button onClick={handleDonate} variant="contained" className={classes.button}>
-                            Donate
-                        </Button>
+                        {isOwner &&
+                            <div className={classes.formFrame}>
+                                <FormControl className={classes.form}>
+                                    Beneficiary:
+                                    <Input
+                                      value={beneficiary}
+                                      onChange={(e => setBeneficiary(e.target.value))}
+                                      placeholder="input terra address"
+                                    />
+                                </FormControl>
+                                <Button onClick={handleSetBeneficiary} variant="contained" className={classes.button}>
+                                    Set Beneficiary
+                                </Button>
+                            </div>
+                        }
                     </DialogContentText>
                 </DialogContent>
+                <DialogActions>
+                    <Button onClick={(_) => setOpen(false)} variant="contained" className={classes.button}>
+                        Cancel
+                    </Button>
+                    {isOwner &&
+                        <Button onClick={handleWithdraw} variant="contained" className={classes.button}>
+                            Withdrawal
+                        </Button>
+                    }
+                </DialogActions>
             </Dialog>
             <Card className={classes.card} onClick={(_ => setOpen(true))}>
                 <CardActionArea>
@@ -127,7 +207,8 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
                 <CardActions>
                     <Button
                         variant="contained"
-                        className={classes.button}>
+                        className={classes.button}
+                    >
                         View More
                     </Button>
                 </CardActions>

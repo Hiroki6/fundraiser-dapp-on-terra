@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     },
     h1: {
         textAlign: "center",
-        margin: "10px 0"
+        margin: "20px"
     }
 });
 

@@ -3,6 +3,6 @@
 Cargo.lock
 
 .idea
-/node_modules/
+node_modules
 
 refs.terrain.json
