@@ -1,4 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
 use crate::state::{Donation, FundraiserContract};
 
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, Addr, Uint128, BankMsg};
@@ -34,6 +33,7 @@ impl<'a> FundraiserContract<'a> {
         };
         set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
         self.fundraiser.save(deps.storage, &fundraiser)?;
+        self.total_donations.save(deps.storage, &Uint128::zero())?;
 
         Ok(Response::new()
             .add_attribute("method", "instantiate")
@@ -50,7 +50,7 @@ impl<'a> FundraiserContract<'a> {
     ) -> Result<Response, ContractError> {
         match msg {
             ExecuteMsg::SetBeneficiary { beneficiary } => self.set_beneficiary(deps, info, beneficiary),
-            ExecuteMsg::Donate {} => self.donate(deps, info),
+            ExecuteMsg::Donate {} => self.donate(deps, env, info),
             ExecuteMsg::Withdraw {} => self.withdraw(deps, env, info)
         }
     }
@@ -70,13 +70,17 @@ impl<'a> FundraiserContract<'a> {
         Ok(Response::new().add_attribute("method", "set_beneficiary"))
     }
 
-    fn donate(&self, deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {
+    fn donate(&self, deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, ContractError> {
         // currently we assume fund is luna
         let payment = must_pay(&info, ULUNA)?;
         let donation = Donation {
             value: payment,
-            date: Uint128::new(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis())
+            date: env.block.time
         };
+
+        self.total_donations.update(deps.storage, |total| -> Result<_, ContractError> {
+            Ok(total+payment)
+        })?;
 
         self.donation.update(deps.storage, info.sender, |donation_opt: Option<Vec<Donation>>| -> Result<_, ContractError> {
             match donation_opt {

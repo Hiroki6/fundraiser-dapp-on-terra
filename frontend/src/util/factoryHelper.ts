@@ -8,7 +8,7 @@ export const getFundraiserList = async(wallet: ConnectedWallet, limit: number = 
 
     for(const addr of addrs) {
         const fundraiserRes = await queryFundraiser(wallet, addr);
-        const fundraiser = new Fundraiser(fundraiserRes.name, fundraiserRes.description, fundraiserRes.image_url, fundraiserRes.url, fundraiserRes.owner, fundraiserRes.beneficiary, addr);
+        const fundraiser = new Fundraiser(fundraiserRes.name, fundraiserRes.description, fundraiserRes.image_url, fundraiserRes.url, fundraiserRes.owner, fundraiserRes.beneficiary, addr, fundraiserRes.total_donations);
         fundraisers.push(fundraiser);
     }
 
@@ -24,8 +24,9 @@ export class Fundraiser {
     owner: string;
     beneficiary: string;
     contractAddress: string;
+    total_donation: number;
 
-    constructor(name: string, description: string, imageUrl: string, url: string, owner: string, beneficiary: string, contractAddress: string) {
+    constructor(name: string, description: string, imageUrl: string, url: string, owner: string, beneficiary: string, contractAddress: string, total_donation: number) {
         this.name = name;
         this.url = url;
         this.imageUrl = imageUrl;
@@ -33,6 +34,7 @@ export class Fundraiser {
         this.owner = owner;
         this.beneficiary = beneficiary;
         this.contractAddress = contractAddress;
+        this.total_donation = total_donation;
     }
 
     isOwner (address: string): boolean {

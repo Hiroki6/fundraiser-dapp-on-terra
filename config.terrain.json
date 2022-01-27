@@ -3,7 +3,7 @@
     "_base": {
       "store": {
         "fee": {
-          "gasLimit": 3000000,
+          "gasLimit": 4000000,
           "amount": {
             "uluna": 1000000
           }
@@ -12,13 +12,13 @@
       },
       "instantiation": {
         "fee": {
-          "gasLimit": 3000000,
+          "gasLimit": 4000000,
           "amount": {
             "uluna": 1000000
           }
         },
         "instantiateMsg": {
-          "fundraiser_code_id": 17
+          "fundraiser_code_id": 33
         },
         "gas": "auto"
       }

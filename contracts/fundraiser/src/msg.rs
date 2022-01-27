@@ -1,6 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use cosmwasm_std::Uint128;
+use crate::state::Donation;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
@@ -24,10 +25,10 @@ pub enum ExecuteMsg {
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     GetFundraiser {},
-    DonationAmount { address: String }
+    DonationAmount { address: String },
+    MyDonations { address: String }
 }
 
-// We define a custom struct for each query response
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct FundraiserResponse {
     pub name: String,
@@ -35,11 +36,16 @@ pub struct FundraiserResponse {
     pub image_url: String,
     pub description: String,
     pub owner: String,
-    pub beneficiary: String // @todo add total donation
+    pub beneficiary: String,
+    pub total_donations: Uint128
 }
 
-// We define a custom struct for each query response
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct DonationAmountResponse {
     pub amount: Uint128,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct MyDonationsResponse {
+    pub donations: Vec<Donation>,
 }

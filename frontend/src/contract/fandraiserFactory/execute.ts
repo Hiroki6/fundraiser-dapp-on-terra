@@ -3,7 +3,7 @@ import {ConnectedWallet} from "@terra-money/wallet-provider";
 import {execute} from "../util";
 import {contractAddress} from "./address";
 
-const _execFactoryContract = (msg: any, fee = new Fee(200000, { uluna: 10000 })) => async (wallet: ConnectedWallet) => {
+const _execFactoryContract = (msg: any, fee?: Fee) => async (wallet: ConnectedWallet) => {
     return execute(contractAddress(wallet))(msg, fee)(wallet)
 }
 
@@ -14,7 +14,7 @@ export const createFundraiser = async (wallet: ConnectedWallet, createFundraiser
         image_url: createFundraiserMsg.imageUrl,
         name: createFundraiserMsg.name,
         url: createFundraiserMsg.url,
-    }})(wallet)
+    }}, undefined)(wallet)
 }
 
 export class CreateFundraiserMsg {

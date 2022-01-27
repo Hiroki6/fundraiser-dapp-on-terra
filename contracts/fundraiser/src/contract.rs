@@ -5,8 +5,6 @@ use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult}
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{FundraiserContract};
-//use std::time::{SystemTime};
-
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
