@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import New from "./pages/New";
 import { AppBar, makeStyles, Toolbar, Typography } from "@material-ui/core";
 import {ConnectWallet} from "./components/ConnectWallet";
+import Receipts from "./pages/Receipts";
 
 const useStyles = makeStyles({
     navLink: {
@@ -45,6 +46,8 @@ function App() {
                 <Route path="/" element={Home()}>
                 </Route>
                 <Route path="/new" element={New()}>
+                </Route>
+                <Route path="/receipts" element={<Receipts />}>
                 </Route>
                 <Route path="*">{() => <p>404 Page</p>}</Route>
             </Routes>

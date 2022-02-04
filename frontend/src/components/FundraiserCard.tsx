@@ -15,6 +15,7 @@ import {getExchangeRate} from "../util/luna";
 import {ConnectedWallet, useConnectedWallet} from "@terra-money/wallet-provider";
 import {donate, setBeneficiary as executeSetBeneficiary, withDraw} from "../contract/fundraiser/execute";
 import {queryMyDonations, Donation} from "../contract/fundraiser/query";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         maxWidth: 450,
-        height: 400
+        height: 500
     },
     media: {
         height: 200,
@@ -100,10 +101,14 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
     const renderDonationList = () => {
         if(connectedWallet) {
             return donationList.map((donation, index) => {
-                const euro = (donation.value * exchangeRate / 100000);
+                const euro = (donation.value * exchangeRate / 100000).toFixed(2);
+                const luna = (donation.value/100000).toFixed(6);
                 return (
-                    <li>
-                        <p>LUNA: {(donation.value/100000).toFixed(6)}, €{euro.toFixed(2)}</p>
+                    <li key={index}>
+                        <p>{luna} [Luna], €{euro}</p>
+                        <Button variant="contained" className={classes.button} to="/receipts" state={{ fundName: fundraiser.name, donationLunaAmount: luna, donationEuroAmount: euro, donationDate: donation.date} } component={Link}>
+                            Receipt
+                        </Button>
                     </li>
                 )
             })
@@ -133,9 +138,9 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
                 <DialogContent>
                     <DialogContentText>
                         <img alt={fundraiser.name} src={fundraiser.imageUrl} className={classes.media} />
-                        <Typography component="p">
+                        <p>
                             {fundraiser.description}
-                        </Typography>
+                        </p>
                         <div className={classes.formFrame}>
                             <FormControl className={classes.form}>
                                 €
@@ -152,7 +157,7 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
                             </Button>
                             </div>
                         <div>
-                            <Typography component="h3">My donations</Typography>
+                            <h3>My donations</h3>
                             <ul>
                                 {renderDonationList()}
                             </ul>
@@ -208,6 +213,7 @@ const FundraiserCard = ({ fundraiser }: FundraiserCardProps) => {
                     <Button
                         variant="contained"
                         className={classes.button}
+                        onClick={(_ => setOpen(true))}
                     >
                         View More
                     </Button>
