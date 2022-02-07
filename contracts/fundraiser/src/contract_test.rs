@@ -85,9 +85,4 @@ fn withdraw() {
 
     let res = contract.execute(deps.as_mut(), mock_env(), info.clone(), ExecuteMsg::Withdraw {}).unwrap();
     assert_eq!(1, res.messages.len());
-    // @todo it somehow doesn't work
-    //assert_eq!(res.messages[0].msg, CosmosMsg::Bank(BankMsg::Send {
-    //    to_address: "beneficiaryaddr".to_string(),
-    //    amount: vec![Coin{denom: "uluna".to_string(), amount: Uint128::new(100)}]
-    //}));
 }
