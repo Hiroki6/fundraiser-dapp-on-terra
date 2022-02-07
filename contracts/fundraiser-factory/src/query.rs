@@ -47,10 +47,6 @@ impl<'a> FundraiserFactoryContract<'a> {
 
         //let addrs: Vec<String> = fundraisers.addrs.iter().collect();
 
-        Ok(
-            GetFundraisersResponse {
-               addrs
-            }
-        )
+        Ok(GetFundraisersResponse { addrs })
     }
 }
