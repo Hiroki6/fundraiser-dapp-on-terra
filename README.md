@@ -1,5 +1,5 @@
-# Fundraiser on LUNA
-This is a Dapp on Luna of the fundraiser Dapp of [this book](https://www.oreilly.com/library/view/hands-on-smart-contract/9781492045250/).
+# Fundraiser on Terra
+This is a Dapp on Terra of the fundraiser Dapp of [this book](https://www.oreilly.com/library/view/hands-on-smart-contract/9781492045250/).
 
 The original implementation on Ethereum is in [this repository](https://github.com/RedSquirrelTech/hoscdev/tree/master/chapter-10%2B11).
 
