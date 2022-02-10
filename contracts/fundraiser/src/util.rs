@@ -1,5 +1,5 @@
 use crate::error::ContractError;
-use cosmwasm_std::{MessageInfo, Coin, Uint128};
+use cosmwasm_std::{Coin, MessageInfo, Uint128};
 
 // copy from the cw-util which supports from tersions above cosmos-std v1.0.0-beta3
 pub fn must_pay(info: &MessageInfo, denom: &str) -> Result<Uint128, ContractError> {

@@ -1,10 +1,12 @@
 #![cfg(test)]
-use cosmwasm_std::{BankMsg, CosmosMsg};
-use cosmwasm_std::{DepsMut, Coin, Uint128, from_binary, coins};
 use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
+use cosmwasm_std::{coins, from_binary, Coin, DepsMut, Uint128};
+use cosmwasm_std::{BankMsg, CosmosMsg};
 
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, FundraiserResponse, DonationAmountResponse};
-use crate::state::{FundraiserContract};
+use crate::msg::{
+    DonationAmountResponse, ExecuteMsg, FundraiserResponse, InstantiateMsg, QueryMsg,
+};
+use crate::state::FundraiserContract;
 
 fn setup_contract(deps: DepsMut) -> FundraiserContract<'static> {
     let contract = FundraiserContract::default();
@@ -21,7 +23,7 @@ fn setup_contract(deps: DepsMut) -> FundraiserContract<'static> {
         image_url: image_url.clone(),
         description: description.clone(),
         beneficiary: beneficiary.clone(),
-        custodian: custodian.clone()
+        custodian: custodian.clone(),
     };
 
     let info = mock_info("creator", &[]);
@@ -46,9 +48,18 @@ fn set_beneficiary() {
 
     let info = mock_info("creator", &[]);
     let new_beneficiary = String::from("newbeneficiaryaddr");
-    let _res = contract.execute(deps.as_mut(), mock_env(), info, ExecuteMsg::SetBeneficiary{ beneficiary: new_beneficiary.clone() });
+    let _res = contract.execute(
+        deps.as_mut(),
+        mock_env(),
+        info,
+        ExecuteMsg::SetBeneficiary {
+            beneficiary: new_beneficiary.clone(),
+        },
+    );
 
-    let res = contract.query(deps.as_ref(), mock_env(), QueryMsg::GetFundraiser{}).unwrap();
+    let res = contract
+        .query(deps.as_ref(), mock_env(), QueryMsg::GetFundraiser {})
+        .unwrap();
     let value: FundraiserResponse = from_binary(&res).unwrap();
     assert_eq!(new_beneficiary, value.beneficiary);
 }
@@ -60,14 +71,23 @@ fn donation() {
     let contract = setup_contract(deps.as_mut());
 
     let info = mock_info("creator", &coins(100, "uluna"));
-    let res = contract.execute(deps.as_mut(), mock_env(), info, ExecuteMsg::Donate {}).unwrap();
+    let res = contract
+        .execute(deps.as_mut(), mock_env(), info, ExecuteMsg::Donate {})
+        .unwrap();
     assert_eq!(0, res.messages.len());
 
-    let res = contract.query(deps.as_ref(), mock_env(), QueryMsg::DonationAmount{ address: "creator".to_string()}).unwrap();
+    let res = contract
+        .query(
+            deps.as_ref(),
+            mock_env(),
+            QueryMsg::DonationAmount {
+                address: "creator".to_string(),
+            },
+        )
+        .unwrap();
     let value: DonationAmountResponse = from_binary(&res).unwrap();
     assert_eq!(Uint128::new(100), value.amount);
 }
-
 
 #[test]
 fn withdraw() {
@@ -76,13 +96,35 @@ fn withdraw() {
     let contract = setup_contract(deps.as_mut());
 
     let info = mock_info("creator", &coins(100, "uluna"));
-    let res = contract.execute(deps.as_mut(), mock_env(), info.clone(), ExecuteMsg::Donate {}).unwrap();
+    let res = contract
+        .execute(
+            deps.as_mut(),
+            mock_env(),
+            info.clone(),
+            ExecuteMsg::Donate {},
+        )
+        .unwrap();
     assert_eq!(0, res.messages.len());
 
-    let res = contract.query(deps.as_ref(), mock_env(), QueryMsg::DonationAmount{ address: "creator".to_string()}).unwrap();
+    let res = contract
+        .query(
+            deps.as_ref(),
+            mock_env(),
+            QueryMsg::DonationAmount {
+                address: "creator".to_string(),
+            },
+        )
+        .unwrap();
     let value: DonationAmountResponse = from_binary(&res).unwrap();
     assert_eq!(Uint128::new(100), value.amount);
 
-    let res = contract.execute(deps.as_mut(), mock_env(), info.clone(), ExecuteMsg::Withdraw {}).unwrap();
+    let res = contract
+        .execute(
+            deps.as_mut(),
+            mock_env(),
+            info.clone(),
+            ExecuteMsg::Withdraw {},
+        )
+        .unwrap();
     assert_eq!(1, res.messages.len());
 }

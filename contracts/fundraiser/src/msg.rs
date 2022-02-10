@@ -1,7 +1,7 @@
+use crate::state::Donation;
+use cosmwasm_std::Uint128;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use cosmwasm_std::Uint128;
-use crate::state::Donation;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
@@ -10,7 +10,7 @@ pub struct InstantiateMsg {
     pub image_url: String,
     pub description: String,
     pub beneficiary: String,
-    pub custodian: String
+    pub custodian: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -26,7 +26,7 @@ pub enum ExecuteMsg {
 pub enum QueryMsg {
     GetFundraiser {},
     DonationAmount { address: String },
-    MyDonations { address: String }
+    MyDonations { address: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -37,7 +37,7 @@ pub struct FundraiserResponse {
     pub description: String,
     pub owner: String,
     pub beneficiary: String,
-    pub total_donations: Uint128
+    pub total_donations: Uint128,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

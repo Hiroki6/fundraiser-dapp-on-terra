@@ -1,17 +1,15 @@
 #![cfg(test)]
 
-use cosmwasm_std::{DepsMut, attr, SubMsg, ReplyOn, WasmMsg, to_binary};
-use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 use crate::msg::ExecuteMsg::CreateFundraiser;
 use crate::msg::InstantiateMsg;
 use crate::state::FundraiserFactoryContract;
+use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
+use cosmwasm_std::{attr, to_binary, DepsMut, ReplyOn, SubMsg, WasmMsg};
 
 fn setup_contract(deps: DepsMut) -> FundraiserFactoryContract<'static> {
     let contract = FundraiserFactoryContract::default();
     let fundraiser_code_id = 1 as u64;
-    let msg = InstantiateMsg {
-        fundraiser_code_id
-    };
+    let msg = InstantiateMsg { fundraiser_code_id };
 
     let info = mock_info("creator", &[]);
 
@@ -48,7 +46,9 @@ fn create_fundraiser() {
         beneficiary: beneficiary.clone(),
     };
 
-    let res = contract.execute(deps.as_mut(), mock_env(), info, msg).unwrap();
+    let res = contract
+        .execute(deps.as_mut(), mock_env(), info, msg)
+        .unwrap();
 
     assert_eq!(
         res.attributes,
@@ -71,12 +71,14 @@ fn create_fundraiser() {
                     description: description.clone(),
                     beneficiary: beneficiary.clone(),
                     custodian: "creator".to_string()
-                }).unwrap(),
+                })
+                .unwrap(),
                 code_id: 1,
                 funds: vec![],
                 label: "".to_string(),
                 admin: None
-            }.into()
+            }
+            .into()
         }]
     )
 }
